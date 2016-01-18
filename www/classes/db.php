@@ -4,7 +4,7 @@ class DB
 {
     private $dbh;
 
-    public function __construct($driver, $host, $dbname, $user, $pass)
+    public function __construct($driver = 'mysql', $host = 'localhost', $dbname = 'edu', $user = 'root', $pass = 'drol21755')
     {
         try {
             $this->dbh = new PDO($driver.':host='.$host.';dbname='.$dbname, $user, $pass);
@@ -17,14 +17,14 @@ class DB
 
     public function query($query)
     {
-        return $this->dbh->query($query);
+        return $this->dbh->query($query, 'News');
     }
 
-    public function execute($query)
+    public function execute($query, $class = 'stdClass')
     {
         $result = $this->dbh->prepare($query);
         $result->execute();
-        $result = $result->fetchAll();
+        $result = $result->fetchAll(PDO::FETCH_CLASS, $class);
         if (count($result)) {
             return $result;
         } else {

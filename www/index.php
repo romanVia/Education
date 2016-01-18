@@ -1,12 +1,8 @@
 <?php
 
-require __DIR__ . '/model/news.php';
+require_once __DIR__ . '/models/news.php';
 
-showAll();
-//phpinfo();
+$items = News::getAll();
+//?><!--<pre>--><?php //print_r($news); ?><!--</pre>--><?php
 
-//require __DIR__ . '/model/news.php';
-//$items = getAll();
-//include __DIR__ . '/view/index.php';
-
-?>
+include __DIR__ . '/views/index.php';
