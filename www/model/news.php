@@ -1,14 +1,16 @@
 <?php
 
-require_once __DIR__ . '/../functions/sql.php';
+require_once __DIR__ . '/../classes/db.php';
 
-function getAll()
+function showAll()
 {
-    sql_connect();
+    $db = new DB('mysql', 'localhost', 'edu', 'root', 'drol21755');
+    $arr = $db->query('SELECT * FROM news');
+    foreach ($arr as $row) {
+        print_r($row);
+    }
 
-    $sql = 'SELECT * FROM news BY date DESC';
-
-    return sql_query($sql);
+//    $sql = 'SELECT * FROM news BY date DESC';
 }
 
 ?>
