@@ -1,16 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../classes/db.php';
+//require_once __DIR__ . '/../classes/db.php';
 
 class News
+    extends AbstractModel
 {
     public $id;
     public $title;
     public $text;
 
-    public static function getAll()
-    {
-        $db = new DB;
-        return $db->execute('SELECT * FROM news', 'News');
-    }
+    protected static $name = 'News';
 }

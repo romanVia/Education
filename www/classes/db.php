@@ -15,15 +15,20 @@ class DB
         }
     }
 
+    public function getDB()
+    {
+        return $this->dbh;
+    }
+
     public function query($query)
     {
         return $this->dbh->query($query, 'News');
     }
 
-    public function execute($query, $class = 'stdClass')
+    public function execute($query, $class = 'stdClass', $params = array())
     {
         $result = $this->dbh->prepare($query);
-        $result->execute();
+        $result->execute($params);
         $result = $result->fetchAll(PDO::FETCH_CLASS, $class);
         if (count($result)) {
             return $result;
