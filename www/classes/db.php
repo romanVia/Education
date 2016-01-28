@@ -2,38 +2,45 @@
 
 class DB
 {
-    private $dbh;
+    private $_dbh;
+    /**
+     * @var PDOStatement
+     */
+    private $_stmt;
 
-    public function __construct($driver = 'mysql', $host = 'localhost', $dbname = 'edu', $user = 'root', $pass = 'drol21755')
+    public function __construct($dbname = 'edu', $user = 'root', $pass = 'drol21755')
     {
+        $DEFAULT_DB_DRIVER = 'mysql';
+        $DEFAULT_HOST = 'localhost';
+        $dsn = $DEFAULT_DB_DRIVER . ':host=' . $DEFAULT_HOST . ';dbname=' . $dbname;
         try {
-            $this->dbh = new PDO($driver.':host='.$host.';dbname='.$dbname, $user, $pass);
+            $this->_dbh = new PDO($dsn, $user, $pass);
             //array(PDO::ATTR_PERSISTENT => $persistent)
-            $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->_dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//            $this->dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+//            $this->dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
         } catch (PDOException $e) {
-            echo 'Failed to get DB handle: '.$e->getMessage();
+            echo '<strong>FAILED TO GET DB HANDLE: </strong>' . $e->getMessage();
         }
-    }
-
-    public function getDB()
-    {
-        return $this->dbh;
     }
 
     public function query($query)
     {
-        return $this->dbh->query($query, 'News');
+        return $this->_stmt = $this->_dbh->query($query);
     }
 
-    public function execute($query, $class = 'stdClass', $params = array())
+    public function run($query, $params = [])
     {
-        $result = $this->dbh->prepare($query);
-        $result->execute($params);
-        $result = $result->fetchAll(PDO::FETCH_CLASS, $class);
-        if (count($result)) {
-            return $result;
-        } else {
-            return false;
-        }
+        return $this->_stmt = $this->_dbh->prepare($query)->execute($params);
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return PDOStatement
+     */
+    public function __call($name, $arguments)
+    {
+        return call_user_func_array(array($this->_stmt, $name), $arguments);
     }
 }
