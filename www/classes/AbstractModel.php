@@ -5,36 +5,23 @@ abstract class AbstractModel
     /**
      * @var DB
      */
-    private static $_db;
+    private $_db;
     protected static $_table = 'unknown';
-//    protected $data = [];
-    protected static $_data = [];
-
-    public static function init()
-    {
-        self::$_db = new DB;
-//        $db = self::$db;
-        self::query('SELECT * FROM ' . static::$_table);
-        $db = self::getObjects();
-        var_dump($db);
-        static::$_data = $db;
-    }
+    protected $data = [];
 
     public function __set($key, $val)
     {
-//        $this->data[$key] = $val;
-        static::$_data[$key] = $val;
+        $this->data[$key] = $val;
     }
 
     public function __get($key)
     {
-//        return $this->data[$key];
-        return static::$_data[$key];
+        return $this->data[$key];
     }
 
     private static function query($query) { return self::$_db->query($query); }
     private static function execute($query, $params) { self::$_db->run($query, $params); }
-    private static function getObjects() { return self::$_db->fetchAll(PDO::FETCH_CLASS, get_called_class()); }
+    private function getObjects() { return $this->_db->fetchAll(PDO::FETCH_CLASS, get_called_class()); }
 
     public static function getAll()
     {

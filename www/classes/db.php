@@ -1,21 +1,20 @@
 <?php
 
+require_once __DIR__ . '../config.php';
+
+/***
+ * Class DB
+ */
 class DB
 {
     private $_dbh;
-    /**
-     * @var PDOStatement
-     */
     private $_stmt;
+    private static $_instance = null;
 
-    public function __construct($dbname = 'edu', $user = 'root', $pass = 'drol21755')
+    private function __construct()
     {
-        $DEFAULT_DB_DRIVER = 'mysql';
-        $DEFAULT_HOST = 'localhost';
-        $dsn = $DEFAULT_DB_DRIVER . ':host=' . $DEFAULT_HOST . ';dbname=' . $dbname;
         try {
-            $this->_dbh = new PDO($dsn, $user, $pass);
-            //array(PDO::ATTR_PERSISTENT => $persistent)
+            $this->_dbh = new PDO(DB_DRIVER . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
             $this->_dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 //            $this->dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 //            $this->dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
@@ -24,23 +23,30 @@ class DB
         }
     }
 
-    public function query($query)
-    {
-        return $this->_stmt = $this->_dbh->query($query);
-    }
+    private function __clone() {}
 
-    public function run($query, $params = [])
-    {
-        return $this->_stmt = $this->_dbh->prepare($query)->execute($params);
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     * @return PDOStatement
-     */
     public function __call($name, $arguments)
     {
         return call_user_func_array(array($this->_stmt, $name), $arguments);
+    }
+
+    public static function getInstance()
+    {
+        if (self::$_instance == null) {
+            self::$_instance = new self;
+        }
+        return self::$_instance;
+    }
+
+    public function prepare($query)
+    {
+        $this->_stmt = $this->_dbh->prepare($query);
+    }
+
+    public function go($query, $params = [])
+    {
+        $stmt = $this->_dbh->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_CLASS, get_called_class());
     }
 }
