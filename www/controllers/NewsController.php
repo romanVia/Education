@@ -4,9 +4,12 @@
 
 class NewsController
 {
+    private $path;
+
     public function __construct()
     {
         NewsModel::init();
+        $this->path = $_GET['ctrl'] . '/' . $_GET['act'] . '.php';
     }
 
     public function actionAll()
@@ -17,14 +20,14 @@ class NewsController
 //        $news->insert();
 //        $news->update();
 
-        $view = new View;
+        $view = new NewsView;
         $view->items = NewsModel::getAll();
         $view->display('news/all.php');
     }
 
     public function actionOne()
     {
-        $view = new View;
+        $view = new NewsView;
         $view->item = NewsModel::get($_GET['id']);
         $view->display('news/one.php');
     }

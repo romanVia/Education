@@ -1,5 +1,6 @@
 <?php
 //error_reporting(E_ALL);
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/autoload.php';
 
 //$dbh = DB::getInstance()->getObjects('SELECT * FROM news');

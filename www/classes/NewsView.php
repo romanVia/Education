@@ -1,6 +1,6 @@
 <?php
 
-class View
+class NewsView
     implements Iterator
 {
     const PATH = __DIR__ . '/../views/';
@@ -33,7 +33,11 @@ class View
 
     public function display($template)
     {
-        echo $this->render($template);
+//        echo $this->render($template);
+        foreach ($this->data as $key => $val) {
+            $$key = $val;
+        }
+        include $this::PATH . $template;
     }
 
     public function current()
