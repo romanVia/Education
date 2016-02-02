@@ -12,6 +12,7 @@ class NewsModel
     extends AbstractModel
 {
     protected static $_table = 'news';
-    protected static $_data = ['one', 'two'];
+//    protected static $_data = ['one', 'two'];
+//    protected static $_data = [];
 
 }

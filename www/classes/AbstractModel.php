@@ -5,9 +5,14 @@ abstract class AbstractModel
     /**
      * @var DB
      */
-    private $_db;
+    private static $_db;
     protected static $_table = 'unknown';
     protected $data = [];
+
+    public static function init()
+    {
+        self::$_db = DB::getInstance();
+    }
 
     public function __set($key, $val)
     {
@@ -19,20 +24,26 @@ abstract class AbstractModel
         return $this->data[$key];
     }
 
-    private static function query($query) { return self::$_db->query($query); }
-    private static function execute($query, $params) { self::$_db->run($query, $params); }
-    private function getObjects() { return $this->_db->fetchAll(PDO::FETCH_CLASS, get_called_class()); }
-
     public static function getAll()
     {
-        self::query('SELECT * FROM ' . static::$_table);
-        return self::getObjects();
+        return self::$_db->getObjects('SELECT * FROM ' . static::$_table);
     }
 
     public static function get($id)
     {
-        self::execute('SELECT * FROM ' . static::$_table .' WHERE id = ?', [$id]);
-        return self::getObjects()[0];
+        return self::$_db->getObjects_wp('SELECT * FROM ' . static::$_table .' WHERE id = ?', [$id])[0];
+    }
+
+    public static function removeAll()
+    {
+        // TODO: remove all news
+    }
+
+    public static function remove($id)
+    {
+        $db = self::$_db;
+        $q = 'DELETE FROM ' . static::$_table . ' WHERE id = ?';
+        $db->query_wp($q, [$id]);
     }
 
     public function save()
@@ -43,7 +54,7 @@ abstract class AbstractModel
                 '(' . implode(',', array_keys($this->data)) .')
                 VALUES
                 (' . str_pad('?', count($this->data) * 2 - 1, ',?') . ')';
-            $db->run($q, array_values($this->data));
+            $db->query_wp($q, array_values($this->data));
 
         } catch (PDOException $e) {
             echo 'INSERT ERROR: ', $e->getMessage();
@@ -52,21 +63,13 @@ abstract class AbstractModel
 
     public function update()
     {
-        die;
         $db = self::$_db;
         $q = 'UPDATE ' . static::$_table .
             'SET ' . implode('=?,', array_keys($this->data)) . '=?' .
             ' WHERE id=:id';
         $data = array_values($this->data);
 
-        $db->run($q, $data);
-    }
-
-    public static function remove($id)
-    {
-        $db = self::$_db;
-        $q = 'DELETE FROM ' . static::$_table . ' WHERE id = ?';
-        $db->run($q, [$id]);
+        $db->query_wp($q, $data);
     }
 
     public function delete()

@@ -4,24 +4,27 @@
 
 class NewsController
 {
-    public function actionAll()
+    public function __construct()
     {
         NewsModel::init();
+    }
+
+    public function actionAll()
+    {
 //        $news->title = 'TRY new!!!';
 //        $news->text = 'I\'m trying';
 //        $news->id = 15;
 //        $news->insert();
 //        $news->update();
 
-//        include __DIR__ . '/../views/news/all.php';
-        $view = new View();
+        $view = new View;
         $view->items = NewsModel::getAll();
         $view->display('news/all.php');
     }
 
     public function actionOne()
     {
-        $view = new View();
+        $view = new View;
         $view->item = NewsModel::get($_GET['id']);
         $view->display('news/one.php');
     }
