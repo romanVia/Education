@@ -46,30 +46,30 @@ abstract class AbstractModel
         $db->query_wp($q, [$id]);
     }
 
-    public function save()
+    public function insert()
     {
-        $db = self::$_db;
-        try {
-            $q = 'INSERT INTO ' . static::$_table .
-                '(' . implode(',', array_keys($this->data)) .')
-                VALUES
-                (' . str_pad('?', count($this->data) * 2 - 1, ',?') . ')';
-            $db->query_wp($q, array_values($this->data));
-
-        } catch (PDOException $e) {
-            echo 'INSERT ERROR: ', $e->getMessage();
-        }
+        $q = 'INSERT
+        INTO ' . static::$_table . '(' . implode(',', array_keys($this->data)) .')
+        VALUES (?' . str_repeat(',?', count($this->data) - 1) . ')';
+        return self::$_db->query_wp($q, array_values($this->data));
     }
 
     public function update()
     {
-        $db = self::$_db;
-        $q = 'UPDATE ' . static::$_table .
-            'SET ' . implode('=?,', array_keys($this->data)) . '=?' .
-            ' WHERE id=:id';
+        $arr = array_keys($this->data);
+        array_pop($arr);
+        $q = 'UPDATE ' . static::$_table . '
+        SET ' . implode('=?,', $arr) . '=?
+        WHERE id=?';
         $data = array_values($this->data);
+        self::$_db->query_wp($q, $data);
+    }
 
-        $db->query_wp($q, $data);
+    public function save()
+    {
+        if (!$this->insert()) {
+            $this->update();
+        }
     }
 
     public function delete()

@@ -46,14 +46,20 @@ class DB
 
     public function query_wp($query, $params)
     {
-        $stmt = $this->_dbh->prepare($query);
-        $stmt->execute($params);
-        return $stmt;
+        try {
+            $stmt = $this->_dbh->prepare($query);
+            $stmt->execute($params);
+            return $stmt;
+        }
+        catch (PDOException $e) {
+            return false;
+        }
     }
 
     public function getObjects($query)
     {
-        return $this->_dbh->query($query)->fetchAll(PDO::FETCH_CLASS, get_called_class());
+//        return $this->_dbh->query($query)->fetchAll(PDO::FETCH_CLASS, get_called_class());
+        return $this->_dbh->query($query, PDO::FETCH_CLASS, get_called_class());
     }
 
     public function getObjects_wp($query, $params)

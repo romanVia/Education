@@ -14,22 +14,23 @@ class NewsController
 
     public function actionAll()
     {
-//        $news->title = 'TRY new!!!';
-//        $news->text = 'I\'m trying';
-//        $news->id = 15;
-//        $news->insert();
-//        $news->update();
+//        $new = new NewsModel;
+//        $new->title = 'New';
+//        $new->text = 'New text';
+//        $new->id = 25;
+//        $new->update();
+//        $new->delete();
 
         $view = new NewsView;
         $view->items = NewsModel::getAll();
-        $view->display('news/all.php');
+        $view->display($this->path);
     }
 
     public function actionOne()
     {
         $view = new NewsView;
         $view->item = NewsModel::get($_GET['id']);
-        $view->display('news/one.php');
+        $view->display($this->path);
     }
 
     public function actionAdd()
@@ -37,7 +38,8 @@ class NewsController
         $article = new NewsModel;
         $article->title = $_GET['title'];
         $article->text = $_GET['text'];
-        $article->save();
+        $article->insert();
+        // TODO: $article->save();
     }
 
     public function actionDel()
