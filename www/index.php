@@ -1,5 +1,7 @@
 <?php
-//error_reporting(E_ALL);
+
+//var_dump($_SERVER['REQUEST_URI']); die;
+
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/autoload.php';
 

@@ -1,6 +1,6 @@
 <?php
 
-//require_once __DIR__ . '/../classes/db.php';
+namespace Application\Models;
 
 /**
  * Class News
@@ -8,8 +8,8 @@
  * @property $title
  * @property $text
  */
-class NewsModel
-    extends AbstractModel
+class News
+    extends \AbstractModel
 {
     protected static $_table = 'news';
 //    protected static $_data = ['one', 'two'];

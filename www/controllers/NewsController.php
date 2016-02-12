@@ -1,6 +1,6 @@
 <?php
 
-//require_once __DIR__ . '/../models/news.php';
+use Application\Models\News as NewsModel;
 
 class NewsController
 {
