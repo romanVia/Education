@@ -15,6 +15,7 @@ function __autoload($class)
         $classParts = explode('\\', $class);
         $classParts[0] = __DIR__;
         $path = implode(DIRECTORY_SEPARATOR, $classParts);
+        echo $class; die;
         require $path . '.php';
     }
 }
